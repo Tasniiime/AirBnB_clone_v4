@@ -1,2 +1,2 @@
-This part of the AriBnB clone is the web static .the part where we will create
-HTML and CSS styling for the website .
+This is the  web static part of the project. In this phase we will create a website  using HTLML and style it with css.
+The images folder holds the images, icons thta are necessary for the website such as the logo, bathroom icons...
