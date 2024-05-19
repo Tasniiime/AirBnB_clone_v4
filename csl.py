@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Module for the entry point of the command interpreter."""
+"""Module for the entry point of the cmd interpreter."""
 
 import cmd
 from models.base_model import BaseModel
@@ -158,18 +158,15 @@ class HBNBCommand(cmd.Cmd):
 
         pattern = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s((?:"[^"]*")|(?:\S+)))?)?)?'
         match = re.search(pattern, line)
-        if not match:
-            print("** class name missing **")
-            return
-        
         class_name = match.group(1)
         obj_id = match.group(2)
         attribute = match.group(3)
         value = match.group(4)
-        
-        if class_name not in storage.classes():
+        if not match:
+            print("** class name missing **")
+        elif class_name not in storage.classes():
             print("** class doesn't exist **")
-        elif not obj_id:
+        elif obj_id is None:
             print("** instance id missing **")
         else:
             key = f"{class_name}.{obj_id}"
@@ -180,22 +177,22 @@ class HBNBCommand(cmd.Cmd):
             elif not value:
                 print("** value missing **")
             else:
-                cast = None
+                cast_type = None
                 if not re.search(r'^".*"$', value):
                     if '.' in value:
-                        cast = float
+                        cast_type = float
                     else:
-                        cast = int
+                        cast_type = int
                 else:
                     value = value.replace('"', '')
-                attributes = storage.attributes()[class_name]
-                if attribute in attributes:
-                    value = attributes[attribute](value)
-                elif cast:
+                class_attrs = storage.attributes()[class_name]
+                if attribute in class_attrs:
+                    value = class_attrs[attribute](value)
+                elif cast_type:
                     try:
-                        value = cast(value)
+                        value = cast_type(value)
                     except ValueError:
-                        pass  # stay as string if conversion fails
+                        pass
                 setattr(storage.all()[key], attribute, value)
                 storage.all()[key].save()
 
