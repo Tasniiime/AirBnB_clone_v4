@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""This script is the base model"""
+"""This script definess the base model"""
 
 import uuid
 from datetime import datetime
@@ -8,14 +8,14 @@ from models import storage
 
 class BaseModel:
 
-    """Class from which all other classes will inherit"""
+    """Base Class  which all other classes will inherit from"""
 
     def __init__(self, *args, **kwargs):
         """Initializes instance attributes
 
         Args:
-            - *args: list of arguments
-            - **kwargs: dict of key-values arguments
+            - *args: arguments
+            - **kwargs: key-values arguments dict
         """
 
         if kwargs is not None and kwargs != {}:
@@ -35,19 +35,19 @@ class BaseModel:
             storage.new(self)
 
     def __str__(self):
-        """Returns official string representation"""
+        """Returns official string representation of the instance"""
 
         return "[{}] ({}) {}".\
             format(type(self).__name__, self.id, self.__dict__)
 
     def save(self):
-        """updates the public instance attribute updated_at"""
+        """updates the public updated_at  inst attribute to the current time"""
 
         self.updated_at = datetime.now()
         storage.save()
 
     def to_dict(self):
-        """returns a dictionary containing all keys/values of __dict__"""
+        """converts the instance to a dict format_"""
 
         inst_dict = self.__dict__.copy()
         inst_dict["__class__"] = type(self).__name__
