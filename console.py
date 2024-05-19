@@ -10,7 +10,7 @@ import json
 
 class HBNBCommand(cmd.Cmd):
 
-    """This is the class for the command interpreter."""
+    """This is the class for the cmd interpreter."""
 
     prompt = "(hbnb) "
 
@@ -74,7 +74,7 @@ class HBNBCommand(cmd.Cmd):
                 storage.all()[key].save()
 
     def do_EOF(self, line):
-        """Handles End Of File character.
+        """Handles End Of File char.
         """
         print()
         return True
@@ -168,7 +168,7 @@ class HBNBCommand(cmd.Cmd):
             print(len(matches))
 
     def do_update(self, line):
-        """Updates an instance of a class by updating attribute.
+        """keeps the updates of an instance of a class by updating attribute.
         """
         if line == "" or line is None:
             print("** class name missing **")
@@ -210,7 +210,7 @@ class HBNBCommand(cmd.Cmd):
                     try:
                         value = cast(value)
                     except ValueError:
-                        pass  # fine, stay a string then
+                        pass
                 setattr(storage.all()[key], attribute, value)
                 storage.all()[key].save()
 
