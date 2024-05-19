@@ -1,12 +1,12 @@
 #!/usr/bin/python3
-"""Defines the FileStorage class for serializing and deserializing objects to a JSON file."""
+"""class for serializing and deserializing objects to a JSON file."""
 import json
 import os
 import datetime
 
 
 class FileStorage:
-    """Handles the storage and retrieval of data using JSON serialization."""
+    """handles the storage and retrieval of data using JSON serialization."""
 
     __file_path = "file.json"
     __objects = {}
@@ -29,7 +29,7 @@ class FileStorage:
             json.dump(json_objects, file)
 
     def reload(self):
-        """Deserializes objects from the JSON file and loads them into the storage dictionary."""
+        """Deserializes objects from the JSON file and loads them into the storage dict.s"""
         if not os.path.isfile(FileStorage.__file_path):
             return
         with open(FileStorage.__file_path, 'r', encoding='utf-8') as file:
