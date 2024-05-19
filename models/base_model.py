@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""The script defines the base model"""
+"""This script is the base model"""
 
 import uuid
 from datetime import datetime
@@ -8,14 +8,14 @@ from models import storage
 
 class BaseModel:
 
-    """A Class from which all other classes inherit"""
+    """Class from which all other classes will inherit"""
 
     def __init__(self, *args, **kwargs):
-        """Initializes instance attributes attributes
+        """Initializes instance attributes
 
         Args:
-            - *args:  arguments
-            - **kwargs: dictionary of key-values args
+            - *args: list of arguments
+            - **kwargs: dict of key-values arguments
         """
 
         if kwargs is not None and kwargs != {}:
@@ -35,7 +35,7 @@ class BaseModel:
             storage.new(self)
 
     def __str__(self):
-        """Returns official string"""
+        """Returns official string representation"""
 
         return "[{}] ({}) {}".\
             format(type(self).__name__, self.id, self.__dict__)
@@ -47,10 +47,10 @@ class BaseModel:
         storage.save()
 
     def to_dict(self):
-        """converts the intance to dict type_"""
+        """returns a dictionary containing all keys/values of __dict__"""
 
-    instance_dict = self.__dict__.copy()
-    instance_dict["__class__"] = type(self).__name__
-    instance_dict["created_at"] = instance_dict["created_at"].isoformat()
-    instance_dict["updated_at"] = instance_dict["updated_at"].isoformat()
-    return instance_dict
+        inst_dict = self.__dict__.copy()
+        inst_dict["__class__"] = type(self).__name__
+        inst_dict["created_at"] = inst_dict["created_at"].isoformat()
+        inst_dict["updated_at"] = inst_dict["updated_at"].isoformat()
+        return inst_dict
