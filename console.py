@@ -7,6 +7,7 @@ from models import storage
 import json
 import re
 
+
 class HBNBCommand(cmd.Cmd):
     """Class for the command interpreter."""
 
@@ -80,7 +81,8 @@ class HBNBCommand(cmd.Cmd):
             if args[0] not in storage.classes():
                 print("** class doesn't exist **")
             else:
-                instances = [str(obj) for key, obj in storage.all().items() if type(obj).__name__ == args[0]]
+                instances = [str(obj) for key, obj in storage.all().items()
+                             if type(obj).__name__ == args[0]]
                 print(instances)
         else:
             instances = [str(obj) for obj in storage.all().values()]
