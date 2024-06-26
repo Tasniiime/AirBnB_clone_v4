@@ -75,14 +75,13 @@ class FileStorage:
         Exceptions:
             KeyError: when object doesn't exist
         """
-        if obj:
-            key = "{}.{}".format(type(obj).__name__, obj.id)
-            try:
-                del self.__objects[key]
-            except KeyError:
-                pass
+        if obj is None:
+            return
+        obj_to_del = f"{obj.__class__.__name__}.{obj.id}"
 
-    def close(self):
-        """deserializing the JSON file to objects
-        """
-        self.reload()
+        try:
+            del FileStorage.__objects[obj_to_del]
+        except AttributeError:
+            pass
+        except KeyboardInterrupt:
+            pass
