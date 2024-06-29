@@ -2,6 +2,7 @@
 
 import json
 
+
 class FileStorage:
     """The class manages storage of hbnb models in JSON format"""
     __file_path = 'file.json'
@@ -30,23 +31,13 @@ class FileStorage:
 
     def reload(self):
         """Load storage dictionary from file"""
-        classes = {
-            'BaseModel': BaseModel,
-            'User': User,
-            'State': State,
-            'City': City,
-            'Amenity': Amenity,
-            'Place': Place,
-            'Review': Review
-        }
         try:
             with open(FileStorage.__file_path, 'r') as f:
                 serialized_objects = json.load(f)
                 for key, val in serialized_objects.items():
                     class_name = val['__class__']
-                    if class_name in classes:
-                        obj = classes[class_name](**val)
-                        self.__objects[key] = obj
+                    obj = eval(class_name + '(**val)')
+                    self.__objects[key] = obj
         except FileNotFoundError:
             pass
 
