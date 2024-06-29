@@ -1,24 +1,23 @@
 #!/usr/bin/python3
-"""pack all content within web_static
 """
-from fabric.api import local # type: ignore
+Fabric script to genereate tgz archive
+execute: fab -f 1-pack_web_static.py do_pack
+"""
+
 from datetime import datetime
-import os
+from fabric.api import *
 
 
 def do_pack():
-    """pack all content within web_static
-    into a .tgz archive
-    The archive will be put in versions/
     """
-    if not os.path.exists("versions"):
-        local("mkdir versions")
-    now = datetime.now()
-    name = "versions/web_static_{}.tgz".format(
-        now.strftime("%Y%m%d%H%M%S")
-    )
-    cmd = "tar -cvzf {} {}".format(name, "web_static")
-    result = local(cmd)
-    if not result.failed:
-        return name
+    making an archive on web_static folder
+    """
 
+    time = datetime.now()
+    archive = 'web_static_' + time.strftime("%Y%m%d%H%M%S") + '.' + 'tgz'
+    local('mkdir -p versions')
+    create = local('tar -cvzf versions/{} web_static'.format(archive))
+    if create is not None:
+        return archive
+    else:
+        return None
