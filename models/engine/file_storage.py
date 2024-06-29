@@ -1,71 +1,63 @@
 #!/usr/bin/python3
-"""This module defines a class to manage file storage for hbnb clone"""
+
 import json
 
 
 class FileStorage:
-    """defines a class that  manages storage of hbnb models in JSON format"""
+    """The class manages storage of hbnb models in JSON format"""
     __file_path = 'file.json'
     __objects = {}
 
-    def all(self, cls=None):
-        """Return a dict of models currently in storage"""
+    '''def all(self, cls=None):
+        """Returns a list of objects of one type of class"""
         if cls is None:
-            return self.__objects
-        cls_name = cls.__name__
-        dct = {}
-        for key in self.__objects.keys():
-            if key.split('.')[0] == cls_name:
-                dct[key] = self.__objects[key]
-        return dct
+            return list(FileStorage.__objects.values())
+        else:
+            return [obj for obj in FileStorage.__objects.values() if isinstance(obj, cls)]'''
+    
 
     def new(self, obj):
-        """Adds a new object to storage dictionary"""
-        self.__objects.update(
-            {obj.to_dict()['__class__'] + '.' + obj.id: obj}
-            )
+        """Add a new object to storage dict"""
+        key = "{}.{}".format(obj.__class__.__name__, obj.id)
+        self.__objects[key] = obj
+    
+    def all(self, cls=None):
+        """Return a filtered dictionary of models currently in storage"""
+        if cls is None:
+            return FileStorage.__objects
+        else:
+            return {key: obj for key, obj in FileStorage.__objects.items() if isinstance(obj, cls)}
+
 
     def save(self):
-        """save storage dict to file"""
-        with open(self.__file_path, 'w') as f:
-            temp = {}
-            temp.update(self.__objects)
-            for key, val in temp.items():
-                temp[key] = val.to_dict()
-            json.dump(temp, f)
+        """Save storage dictionary to file"""
+        with open(FileStorage.__file_path, 'w') as f:
+            serialized_objects = {}
+            for key, obj in FileStorage.__objects.items():
+                serialized_objects[key] = obj.to_dict()
+            json.dump(serialized_objects, f)
 
     def reload(self):
-        """Loads storage dict from file"""
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.place import Place
-        from models.state import State
-        from models.city import City
-        from models.amenity import Amenity
-        from models.review import Review
-
-        classes = {
-                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
-                    'State': State, 'City': City, 'Amenity': Amenity,
-                    'Review': Review
-                  }
+        """Load storage dictionary from file"""
         try:
-            temp = {}
-            with open(self.__file_path, 'r') as f:
-                temp = json.load(f)
-                for key, val in temp.items():
-                    self.all()[key] = classes[val['__class__']](**val)
+            with open(FileStorage.__file_path, 'r') as f:
+                serialized_objects = json.load(f)
+                for key, val in serialized_objects.items():
+                    class_name = val['__class__']
+                    obj = eval(class_name + '(**val)')
+                    self.__objects[key] = obj
         except FileNotFoundError:
             pass
 
     def delete(self, obj=None):
-        '''this  deletes the object obj from the attribute _obj if it's inside it '''
+        """Delete obj from __objects if found"""
         if obj is None:
             return
-        obj_key = obj.to_dict()['__class__'] + '.' + obj.id
-        if obj_key in self.__objects.keys():
-            del self.__objects[obj_key]
+        key = "{}.{}".format(obj.__class__.__name__, obj.id)
+        if key in self.__objects:
+            del self.__objects[key]
 
-    def close(self):
-        """Deserialize the method"""
+    def close():
+        """ deserialize the json file"""
         self.reload()
+
