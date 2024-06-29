@@ -1,54 +1,71 @@
 #!/usr/bin/python3
-
+"""the  module defines a class that  manages file storage for AIRBNB project"""
 import json
 
 
 class FileStorage:
-    """The class manages storage of hbnb models in JSON format"""
+    """defines a class that manages storage of AIRBNB models in JSON format"""
     __file_path = 'file.json'
     __objects = {}
 
     def all(self, cls=None):
-        """Return a filtered dictionary of models currently in storage.
-        If cls is provided, return objects of that type only."""
+        """Outputs  a dict of models that are currently stored"""
         if cls is None:
-            return FileStorage.__objects
-        else:
-            return {key: obj for key, obj in FileStorage.__objects.items() if isinstance(obj, cls)}
+            return self.__objects
+        cls_name = cls.__name__
+        dct = {}
+        for key in self.__objects.keys():
+            if key.split('.')[0] == cls_name:
+                dct[key] = self.__objects[key]
+        return dct
 
     def new(self, obj):
-        """Add a new object to storage dict"""
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        self.__objects[key] = obj
+        """Add new object to storage dict"""
+        self.__objects.update(
+            {obj.to_dict()['__class__'] + '.' + obj.id: obj}
+            )
 
     def save(self):
-        """Save storage dictionary to file"""
-        with open(FileStorage.__file_path, 'w') as f:
-            serialized_objects = {}
-            for key, obj in FileStorage.__objects.items():
-                serialized_objects[key] = obj.to_dict()
-            json.dump(serialized_objects, f)
+        """saves the  storage dict to file"""
+        with open(self.__file_path, 'w') as f:
+            temp = {}
+            temp.update(self.__objects)
+            for key, val in temp.items():
+                temp[key] = val.to_dict()
+            json.dump(temp, f)
 
     def reload(self):
-        """Load storage dictionary from file"""
+        """loads the  storage dict from a file"""
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
+
+        classes = {
+                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
+                    'State': State, 'City': City, 'Amenity': Amenity,
+                    'Review': Review
+                  }
         try:
-            with open(FileStorage.__file_path, 'r') as f:
-                serialized_objects = json.load(f)
-                for key, val in serialized_objects.items():
-                    class_name = val['__class__']
-                    obj = eval(class_name + '(**val)')
-                    self.__objects[key] = obj
+            temp = {}
+            with open(self.__file_path, 'r') as f:
+                temp = json.load(f)
+                for key, val in temp.items():
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
 
     def delete(self, obj=None):
-        """Delete obj from __objects if found"""
+        ''' deletes the object obj from the attribute __objects if not present '''
         if obj is None:
             return
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        if key in self.__objects:
-            del self.__objects[key]
+        obj_key = obj.to_dict()['__class__'] + '.' + obj.id
+        if obj_key in self.__objects.keys():
+            del self.__objects[obj_key]
 
     def close(self):
-        """Deserialize the JSON file to objects"""
+        """Calls the reload method"""
         self.reload()

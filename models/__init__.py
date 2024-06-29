@@ -1,10 +1,15 @@
 #!/usr/bin/python3
-"""Sets up the package"""
+"""creates an instance of the Storage to be  used"""
 
-from models.engine.file_storage import FileStorage
+from os import getenv
 
-# Create an Instance Of File_Storage
-storage = FileStorage()
+storage_type = getenv('HBNB_TYPE_STORAGE')
 
-# reload The storage file
+if storage_type == 'db':
+    from models.engine.db_storage import DBStorage
+    storage = DBStorage()
+else:
+    from models.engine.file_storage import FileStorage
+    storage = FileStorage()
+
 storage.reload()
