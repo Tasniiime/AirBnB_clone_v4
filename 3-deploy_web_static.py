@@ -9,10 +9,7 @@ env.user = 'ubuntu'
 
 
 def do_pack():
-    """pack all content within web_static
-    into a .tgz archive
-    The archive will be put in versions/
-    """
+    """creates and distributed an archive to the web server"""
     if not os.path.exists("versions"):
         local("mkdir versions")
     now = datetime.now()
@@ -26,10 +23,7 @@ def do_pack():
 
 
 def do_deploy(archive_path):
-    """deploy package to remote server
-    Arguments:
-        archive_path: path to archive to deploy
-    """
+    """deploys the  package to remote server """
     if not archive_path or not os.path.exists(archive_path):
         return False
     put(archive_path, '/tmp')

@@ -1,7 +1,8 @@
 #!/usr/bin/python3
-"""
-Script starts a flask web application
-"""
+"""Script starts a flask web application"""
+"""after each request you must remove the current SQLAlchemy Session:
+Declare a method to handle @app.teardown_appcontext
+Call in this method storage.close()"""
 
 from flask import Flask, render_template
 from models import *
@@ -21,7 +22,7 @@ def states(state_id=None):
 
 @app.teardown_appcontext
 def teardown_db(exception):
-    """closes the storage on teardown db"""
+    """closes the storage on teardown database"""
     storage.close()
 
 if __name__ == '__main__':

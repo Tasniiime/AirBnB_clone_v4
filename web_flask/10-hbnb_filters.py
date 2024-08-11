@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Script starts a flask web application
+
 """
 
 from flask import Flask, render_template
@@ -20,7 +20,7 @@ def filters():
 
 @app.teardown_appcontext
 def teardown_db(exception):
-    """close the storage on teardown db"""
+    """close the storage on teardown database"""
     storage.close()
 
 if __name__ == '__main__':

@@ -1,25 +1,25 @@
 #!/usr/bin/python3
-"""more listening paths """
+"""starts a flask web application, which must be listening on port 5000"""
+""" creates more listening paths"""
 
 from flask import Flask
-
 app = Flask(__name__)
 
 
-@app.route("/", strict_slashes=False)
-def index():
+@app.route('/', strict_slashes=False)
+def hello_hbnb():
     return "Hello HBNB!"
 
 
-@app.route("/hbnb", strict_slashes=False)
-def show():
+@app.route('/hbnb', strict_slashes=False)
+def hbnb():
     return "HBNB"
 
 
-@app.route("/c/string: name", strict_slashes=False)
-def display(name):
-    return "C %s" % (name)
+@app.route('/c/<text>', strict_slashes=False)
+def c_isfun(text):
+    return "C {}".format(text.replace("_", " "))
 
 
-if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
